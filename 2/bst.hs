@@ -5,23 +5,23 @@ import TreePrinters
 find :: (Ord a) => Tree a -> a -> Bool
 find Leaf _ = False
 find (Node a l r) x
-	| x == a = True
-	| x  < a = find l x
-	| x  > a = find r x
+    | x == a = True
+    | x  < a = find l x
+    | x  > a = find r x
 
 insert :: (Ord a) => Tree a -> a -> Tree a
 insert Leaf x = Node x Leaf Leaf
 insert (Node a l r) x
-	| x == a = Node a l r
-	| x  < a = Node a (insert l x) r
-	| x  > a = Node a l (insert r x)
+    | x == a = Node a l r
+    | x  < a = Node a (insert l x) r
+    | x  > a = Node a l (insert r x)
 
 delete :: (Ord a) => Tree a -> a -> Tree a
 delete Leaf x = Leaf
 delete (Node a l r) x
-	| x == a = deleteRoot (Node a l r)
-	| x  < a = Node a (delete l x) r
-	| x  > a = Node a l (delete r x)
+    | x == a = deleteRoot (Node a l r)
+    | x  < a = Node a (delete l x) r
+    | x  > a = Node a l (delete r x)
 
 deleteRoot :: (Ord a) => Tree a -> Tree a
 deleteRoot (Node a Leaf r) = r
