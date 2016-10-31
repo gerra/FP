@@ -2,10 +2,6 @@ import AParser
 import Control.Applicative
 import Data.Char (isDigit, isUpper, isSpace, isAlpha, isAlphaNum)
 
-
-toListable :: Parser a -> Parser [a]
-toListable = fmap (\c -> [c])
-
 zeroOrMore :: Parser a -> Parser [a]
 zeroOrMore p = (oneOrMore p) <|> (pure [])
 
@@ -50,8 +46,11 @@ parseLP = ignoreSpaces (satisfy (== '('))
 parseRP :: Parser Char
 parseRP = ignoreSpaces (satisfy (== ')'))
 
-parseP :: Parser SExpr
-parseP = ((parseLP *> (fmap Comb (zeroOrMore parseSExpr))) <* parseRP)
+parseP :: Parser [SExpr]
+parseP = ((parseLP *> (zeroOrMore parseSExpr)) <* parseRP)
+
+--parseNothing :: Parser a
+--parseNothing = fm
 
 parseSExpr :: Parser SExpr
-parseSExpr = (fmap A parseAtom) <|> (fmap Comb (oneOrMore parseP))
+parseSExpr = (fmap A parseAtom) <|> (fmap Comb parseP)

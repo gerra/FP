@@ -49,7 +49,8 @@ parserToPairParser :: Parser a -> (Parser (b -> (a, b)))
 parserToPairParser = fmap (\c -> (\x -> (c, x)))
 
 abParser :: Parser (Char, Char)
-abParser = (parserToPairParser aParser) <*> bParser
+--abParser = (parserToPairParser aParser) <*> bParser
+abParser = liftA2 (,) aParser bParser
 
 abParser_ :: Parser ()
 abParser_ = fmap (\x -> ()) abParser
@@ -64,8 +65,15 @@ posInt = Parser f where
 parserToIgnoreSnd :: Parser (Integer, Char) -> (Parser (Integer -> [Integer]))
 parserToIgnoreSnd = fmap (\p -> (\i -> [fst p, i]))
 
+toListable :: Parser a -> Parser [a]
+toListable = fmap (\c -> [c])
+
+thd :: (a, b, c) -> c
+thd (_, _, c) = c
+
 intPair :: Parser [Integer]
-intPair = parserToIgnoreSnd (((parserToPairParser posInt) <*> spaceParser)) <*> posInt
+--intPair = parserToIgnoreSnd (((parserToPairParser posInt) <*> spaceParser)) <*> posInt
+intPair = liftA2 (++) (fmap (\x -> [fst x]) (liftA2 (,) posInt spaceParser)) $ toListable posInt
 
 instance Alternative Parser where
     empty = Parser $ \s -> Nothing

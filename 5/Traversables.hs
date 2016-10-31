@@ -19,4 +19,4 @@ instance Traversable (MyConst a) where
     traverse _ (MyConst m) = pure (MyConst m)
 
 instance Traversable (MyPair a) where
-    traverse f (MyPair x y) = (MyPair x) <$> f y 
+    traverse f (MyPair x y) = (MyPair x) <$> f y
