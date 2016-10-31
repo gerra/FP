@@ -5,21 +5,26 @@ n2 = Node {label = 2, parent = Just n1}
 n3 = Node {label = 3, parent = Just n1}
 n4 = Node {label = 4, parent = Nothing}
 
+instance Eq a => Eq (InNode a) where
+    f == s = (label f) == (label s)
+
 checkFirstIsParent :: Eq a => Maybe (InNode a) -> Maybe (InNode a) -> Bool
 checkFirstIsParent Nothing _ = False
 checkFirstIsParent _ Nothing = False
-checkFirstIsParent (Just n1) (Just n2) = if (label n1) == (label n2)
-    then True
-    else checkFirstIsParent (Just n1) (parent n2)
+checkFirstIsParent n1 n2
+    | n1 == n2  = True
+    | otherwise = checkFirstIsParent n1 (n2 >>= parent)
 
 leastCommonAncestor :: Eq a => InNode a -> InNode a -> Maybe (InNode a)
-leastCommonAncestor n1 n2 = if checkFirstIsParent (Just n1) (Just n2)
-    then Just n1
-    else if checkFirstIsParent (Just n2) (Just n1)
-        then Just n2 
-        else safeLeastCommonAncestor (parent n1) (parent n2)
+leastCommonAncestor n1 n2 
+    | checkFirstIsParent f s = f
+    | checkFirstIsParent s f = s
+    | otherwise = safeLeastCommonAncestor f s
+    where 
+        f = return n1
+        s = return n2
 
 safeLeastCommonAncestor :: Eq a => Maybe (InNode a) -> Maybe (InNode a) -> Maybe (InNode a)
-safeLeastCommonAncestor Nothing _ = Nothing
-safeLeastCommonAncestor _ Nothing = Nothing
-safeLeastCommonAncestor (Just n1) (Just n2) = leastCommonAncestor n1 n2
+safeLeastCommonAncestor n1 n2 
+    | n1 == n2  = n1
+    | otherwise = safeLeastCommonAncestor (n1 >>= parent) (n2 >>= parent)

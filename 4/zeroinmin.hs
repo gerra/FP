@@ -15,3 +15,8 @@ zeroInMin (a, b) = f [(a, b)]
             | otherwise = f (h >>= manHeaps) + 1
 
 
+date State s = State {g :: s -> (v, s)}
+m a -> (a -> m b) -> m b
+(State s) v
+   a >>= f = State {g = \s -> (fst $ f a s)}
+

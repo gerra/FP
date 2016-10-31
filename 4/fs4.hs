@@ -5,4 +5,4 @@ import Data.Function
 
 instance MonadFish m => MonadJoin m where
     returnJoin = returnFish
-    join x     = id >=> id $ x
+    join       = id >=> id
