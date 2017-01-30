@@ -2,6 +2,7 @@ module AParser where
 
 import Control.Applicative
 import Data.Char (isDigit, isUpper)
+import Data.List (isPrefixOf)
 
 newtype Parser a
     = Parser { runParser :: String -> Maybe (a, String) }
@@ -48,6 +49,15 @@ spaceParser = oneCharParser ' '
 parserToPairParser :: Parser a -> (Parser (b -> (a, b)))
 parserToPairParser = fmap (\c -> (\x -> (c, x)))
 
+twoCharParser :: Char -> Char -> Parser (Char, Char)
+twoCharParser c1 c2 = liftA2 (,) (oneCharParser c1) (oneCharParser c2)
+
+stringParser :: [Char] -> Parser [Char]
+stringParser x = Parser f where
+    f s
+      | isPrefixOf x s = Just (x, drop (length x) s)
+      | otherwise      = Nothing
+
 abParser :: Parser (Char, Char)
 --abParser = (parserToPairParser aParser) <*> bParser
 abParser = liftA2 (,) aParser bParser
@@ -87,7 +97,7 @@ intOrUppercase = (fmap (\x -> ()) (satisfy isUpper)) <|> (fmap (\x -> ()) posInt
 
 --      helper f Nothing       = Nothing
 --      helper f (Just (a, s)) = (f s) <*> (Just (a, s))
-        
+
 --helper :: (String -> Maybe (a -> b, String)) -> Maybe (a, String) -> Maybe (b, String)
 --helper _ Nothing       = Nothing
 --helper f (Just (a, s)) = helper2 (f s) (Just (a, s))

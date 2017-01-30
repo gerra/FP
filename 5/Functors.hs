@@ -17,3 +17,7 @@ instance Functor (MyConst a) where
 
 instance Functor (MyPair a) where
     fmap f (MyPair a b) = MyPair a (f b)
+
+<$ :: a -> f b -> f a
+a <$ x = fmap (const a) x
+

@@ -20,3 +20,15 @@ instance Foldable (MyConst a) where
 
 instance Foldable (MyPair a) where
     foldMap f (MyPair a b) = f b
+
+length :: f a -> Int
+--(a -> b -> a) -> f b
+-- (a -> b) -> f a -> f b
+length x = foldMap (+1) foldl ((+)) x 0
+
+traverse :: Applicative f => (a -> f b) -> (m a) -> (f (m b))
+
+(Either Double) trav
+
+x :: Either Double Int
+traverse show x ::  (Either Double) Char
